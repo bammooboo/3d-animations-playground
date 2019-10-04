@@ -1,24 +1,29 @@
-document.addEventListener("DOMContentLoaded", function() {
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function () {
   init();
   mainLoop();
 });
 
-let scene, camera, renderer, cube;
+var scene = void 0,
+    camera = void 0,
+    renderer = void 0,
+    cube = void 0;
 
 //how much to move cube in every call in loop
-let ADD = 0.1;
+var ADD = 0.1;
 
-let createCube = function() {
-  let geometry = new THREE.BoxGeometry(1, 1, 1);
-  let material = new THREE.MeshBasicMaterial({color: 0x00a1cb});
+var createCube = function createCube() {
+  var geometry = new THREE.BoxGeometry(1, 1, 1);
+  var material = new THREE.MeshBasicMaterial({ color: 0x00a1cb });
   cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
-}
+};
 
 //Set up the environment - 
 //Initialize scene, camera, objects and renderer
 
-let init = function() {
+var init = function init() {
   console.log(document);
   //create the scene
   scene = new THREE.Scene();
@@ -42,7 +47,7 @@ let init = function() {
 
 //main animation loop - calls every 50-60 ms
 
-let mainLoop = function() {
+var mainLoop = function mainLoop() {
   //add ADD number on very loop.
   // cube.position.x += ADD;
   // cube.rotation.z -= ADD;
@@ -50,7 +55,7 @@ let mainLoop = function() {
   cube.rotation.y += ADD;
 
   //reverse direction if reached 2 on either side
-  if(cube.position.x <= -2 || cube.position.x >= 2) {
+  if (cube.position.x <= -2 || cube.position.x >= 2) {
     ADD *= -1;
   }
 

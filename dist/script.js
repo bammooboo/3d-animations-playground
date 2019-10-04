@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   init();
   mainLoop();
   donutLoop();
+  saturnLoop();
 });
 //For practice section
 var scene = void 0,
@@ -19,6 +20,14 @@ var newScene = void 0,
     newRenderer = void 0;
 var donuts = [];
 var donutsAdd = 0.1;
+
+//For saturn section
+var saturnScene = void 0,
+    saturnCamera = void 0,
+    saturnRenderer = void 0;
+var planet = void 0;
+var rings = [];
+var saturnAdd = 0.01;
 
 //how much to move cube in every call in loop - for practice section
 var ADD = 0.05;
@@ -40,7 +49,7 @@ var createSphere = function createSphere() {
 };
 
 var createTorus = function createTorus() {
-  // (-, -, radius sequence number, tubular sequence number (affects shape eg 5 would make pentagon shape), arc variable (creates arc))
+  // (radius of ring, radius of tube, radius sequence number, tubular sequence number (affects shape eg 5 would make pentagon shape), arc variable (creates arc))
   var geometry = new THREE.TorusGeometry(0.5, 0.2, 30, 30, Math.PI);
   var material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
   torus = new THREE.Mesh(geometry, material);
@@ -53,6 +62,7 @@ var createTorus = function createTorus() {
 var init = function init() {
   practiceShapes();
   rainingDonuts();
+  saturnAnimation();
 };
 
 var practiceShapes = function practiceShapes() {
@@ -141,7 +151,7 @@ var rainingDonuts = function rainingDonuts() {
 var donutLoop = function donutLoop() {
   //instead of generating donuts on every loop iteration - generate them randomly
   var x = Math.random();
-  if (x < 0.2) {
+  if (x < 0.6) {
     createDonut();
   }
   // make donuts look like they are falling
@@ -151,4 +161,64 @@ var donutLoop = function donutLoop() {
 
   newRenderer.render(newScene, newCamera);
   requestAnimationFrame(donutLoop);
+};
+
+var createSaturn = function createSaturn() {
+  //create inner spherical planet
+  var geometry = new THREE.SphereGeometry(0.4, 30, 30);
+  var material = new THREE.MeshBasicMaterial({ color: 0x8d5524 });
+  planet = new THREE.Mesh(geometry, material);
+  saturnScene.add(planet);
+
+  //create rings
+  geometry = new THREE.TorusGeometry(0.51, 0.07, 2, 50);
+  material = new THREE.MeshBasicMaterial({ color: 0xffe39f });
+  var ring = new THREE.Mesh(geometry, material);
+  rings.push(ring);
+
+  geometry = new THREE.TorusGeometry(0.69, 0.07, 2, 50);
+  material = new THREE.MeshBasicMaterial({ color: 0xffad60 });
+  ring = new THREE.Mesh(geometry, material);
+  rings.push(ring);
+
+  geometry = new THREE.TorusGeometry(0.85, 0.07, 2, 50);
+  material = new THREE.MeshBasicMaterial({ color: 0xeac086 });
+  ring = new THREE.Mesh(geometry, material);
+  rings.push(ring);
+
+  //to set correct perspective/angle of planet
+  rings.forEach(function (ring) {
+    ring.rotation.x = 1.7;
+    ring.rotation.y = 0.5;
+    saturnScene.add(ring);
+  });
+};
+
+var saturnAnimation = function saturnAnimation() {
+  saturnScene = new THREE.Scene();
+  saturnScene.background = new THREE.Color(0x000000);
+
+  saturnCamera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+  saturnCamera.position.z = 4;
+
+  var saturnAxes = new THREE.AxesHelper(5);
+  saturnScene.add(saturnAxes);
+
+  saturnRenderer = new THREE.WebGLRenderer();
+  saturnRenderer.setSize(window.innerWidth, window.innerHeight);
+  document.querySelector('.saturn').appendChild(saturnRenderer.domElement);
+};
+
+var saturnLoop = function saturnLoop() {
+  createSaturn();
+
+  //create movement of camera around planet
+
+  saturnCamera.position.y += saturnAdd;
+  if (saturnCamera.position.y >= 0.5 || saturnCamera.position.y <= -0.5) {
+    saturnAdd *= -1;
+  }
+
+  saturnRenderer.render(saturnScene, saturnCamera);
+  requestAnimationFrame(saturnLoop);
 };

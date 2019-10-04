@@ -2,9 +2,10 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   init();
-  mainLoop();
-  donutLoop();
-  saturnLoop();
+  // mainLoop();
+  // donutLoop();
+  // saturnLoop();
+  geoLoop();
 });
 //For practice section
 var scene = void 0,
@@ -60,9 +61,10 @@ var createTorus = function createTorus() {
 //Initialize scene, camera, objects and renderer
 
 var init = function init() {
-  practiceShapes();
-  rainingDonuts();
-  saturnAnimation();
+  // practiceShapes();
+  // rainingDonuts();
+  // saturnAnimation();
+  geometryShape();
 };
 
 var practiceShapes = function practiceShapes() {
@@ -166,23 +168,23 @@ var donutLoop = function donutLoop() {
 var createSaturn = function createSaturn() {
   //create inner spherical planet
   var geometry = new THREE.SphereGeometry(0.4, 30, 30);
-  var material = new THREE.MeshBasicMaterial({ color: 0x8d5524 });
+  var material = new THREE.MeshBasicMaterial({ color: 0x8d5524, wireframe: true });
   planet = new THREE.Mesh(geometry, material);
   saturnScene.add(planet);
 
   //create rings
-  geometry = new THREE.TorusGeometry(0.51, 0.07, 2, 50);
-  material = new THREE.MeshBasicMaterial({ color: 0xffe39f });
+  geometry = new THREE.TorusGeometry(0.51, 0.07, 2, 70);
+  material = new THREE.MeshBasicMaterial({ color: 0xffe39f, wireframe: true });
   var ring = new THREE.Mesh(geometry, material);
   rings.push(ring);
 
-  geometry = new THREE.TorusGeometry(0.69, 0.07, 2, 50);
-  material = new THREE.MeshBasicMaterial({ color: 0xffad60 });
+  geometry = new THREE.TorusGeometry(0.69, 0.07, 2, 70);
+  material = new THREE.MeshBasicMaterial({ color: 0xffad60, wireframe: true });
   ring = new THREE.Mesh(geometry, material);
   rings.push(ring);
 
-  geometry = new THREE.TorusGeometry(0.85, 0.07, 2, 50);
-  material = new THREE.MeshBasicMaterial({ color: 0xeac086 });
+  geometry = new THREE.TorusGeometry(0.85, 0.07, 2, 70);
+  material = new THREE.MeshBasicMaterial({ color: 0xeac086, wireframe: true });
   ring = new THREE.Mesh(geometry, material);
   rings.push(ring);
 
@@ -221,4 +223,57 @@ var saturnLoop = function saturnLoop() {
 
   saturnRenderer.render(saturnScene, saturnCamera);
   requestAnimationFrame(saturnLoop);
+};
+
+//geometry section
+var geoScene = void 0,
+    geoCamera = void 0,
+    geoRenderer = void 0,
+    geoShape = void 0;
+var geoAdd = 0.01;
+
+var createGeometry = function createGeometry() {
+  var geometry = new THREE.Geometry();
+
+  geometry.vertices.push(new THREE.Vector3(3, 0, 0));
+  geometry.vertices.push(new THREE.Vector3(0, 5, 0));
+  geometry.vertices.push(new THREE.Vector3(0, 0, 2));
+  geometry.vertices.push(new THREE.Vector3(1, 2, -2));
+
+  geometry.faces.push(new THREE.Face3(0, 1, 2));
+  geometry.faces.push(new THREE.Face3(1, 2, 3));
+  geometry.faces.push(new THREE.Face3(0, 1, 2));
+
+  var material = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, wireframe: true });
+  geoShape = new THREE.Mesh(geometry, material);
+  geoScene.add(geoShape);
+};
+
+var geometryShape = function geometryShape() {
+  console.log(document);
+  //create the scene
+  geoScene = new THREE.Scene();
+  geoScene.background = new THREE.Color(0x000000);
+
+  //create and locate the camera
+  geoCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+  geoCamera.position.z = 20;
+
+  createGeometry();
+
+  // show axis helper
+  var geoAxes = new THREE.AxesHelper(5);
+  geoScene.add(geoAxes);
+
+  //create the renderer
+  geoRenderer = new THREE.WebGLRenderer();
+  geoRenderer.setSize(window.innerWidth, window.innerHeight);
+  document.querySelector('.geometry').appendChild(geoRenderer.domElement);
+};
+
+var geoLoop = function geoLoop() {
+  // geoShape.geometry.vertices[1].y -= 0.02;
+  geoShape.geometry.verticesNeedUpdate = true;
+  geoRenderer.render(geoScene, geoCamera);
+  requestAnimationFrame(geoLoop);
 };

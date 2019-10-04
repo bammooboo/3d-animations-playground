@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // mainLoop();
   // donutLoop();
   // saturnLoop();
-  geoLoop();
+  // geoLoop();
+  butterflyLoop();
 });
 //For practice section
 var scene = void 0,
@@ -64,7 +65,8 @@ var init = function init() {
   // practiceShapes();
   // rainingDonuts();
   // saturnAnimation();
-  geometryShape();
+  // geometryShape();
+  butterflyEffect();
 };
 
 var practiceShapes = function practiceShapes() {
@@ -272,8 +274,67 @@ var geometryShape = function geometryShape() {
 };
 
 var geoLoop = function geoLoop() {
-  // geoShape.geometry.vertices[1].y -= 0.02;
+  geoShape.geometry.vertices[1].y -= 0.02;
   geoShape.geometry.verticesNeedUpdate = true;
   geoRenderer.render(geoScene, geoCamera);
   requestAnimationFrame(geoLoop);
+};
+
+//Butterfly geometry flapping
+
+var butterflyScene = void 0,
+    butterflyCamera = void 0,
+    butterflyRenderer = void 0,
+    butterfly = void 0;
+var butterflyAdd = 0.8;
+
+var createButterfly = function createButterfly() {
+  var geometry = new THREE.Geometry();
+  var material = new THREE.MeshBasicMaterial({ color: 0xff4606, side: THREE.DoubleSide, wireframe: true });
+
+  butterfly = new THREE.Mesh(geometry, material);
+  geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+  geometry.vertices.push(new THREE.Vector3(5, 0, 0));
+  geometry.vertices.push(new THREE.Vector3(2, 4, 3));
+  geometry.vertices.push(new THREE.Vector3(2, 4, -3));
+
+  var wing = new THREE.Face3(0, 1, 2);
+  geometry.faces.push(wing);
+  wing = new THREE.Face3(0, 1, 3);
+  geometry.faces.push(wing);
+
+  butterfly.rotation.z = 0.7;
+  butterfly.rotation.x = 0.6;
+
+  butterflyScene.add(butterfly);
+};
+
+var butterflyEffect = function butterflyEffect() {
+  butterflyScene = new THREE.Scene();
+  butterflyScene.background = new THREE.Color(0x000000);
+
+  butterflyCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+  butterflyCamera.position.z = 20;
+
+  createButterfly();
+
+  var butterflyAxes = new THREE.AxesHelper(4);
+  butterflyScene.add(butterflyAxes);
+
+  butterflyRenderer = new THREE.WebGLRenderer();
+  butterflyRenderer.setSize(window.innerWidth, window.innerHeight);
+  document.querySelector('.butterfly').appendChild(butterflyRenderer.domElement);
+};
+
+var butterflyLoop = function butterflyLoop() {
+  butterfly.geometry.vertices[2].y += butterflyAdd;
+  butterfly.geometry.vertices[3].y += butterflyAdd;
+  butterfly.geometry.verticesNeedUpdate = true;
+
+  if (butterfly.geometry.vertices[2].y < -4 || butterfly.geometry.vertices[2].y > 4) {
+    butterflyAdd *= -1;
+  }
+
+  butterflyRenderer.render(butterflyScene, butterflyCamera);
+  requestAnimationFrame(butterflyLoop);
 };

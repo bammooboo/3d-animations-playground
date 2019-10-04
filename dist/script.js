@@ -9,10 +9,11 @@ var scene = void 0,
     camera = void 0,
     renderer = void 0,
     cube = void 0,
-    sphere = void 0;
+    sphere = void 0,
+    torus = void 0;
 
 //how much to move cube in every call in loop
-var ADD = 0.1;
+var ADD = 0.05;
 
 var createCube = function createCube() {
   var geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -28,6 +29,14 @@ var createSphere = function createSphere() {
   var material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
   sphere = new THREE.Mesh(geometry, material);
   scene.add(sphere);
+};
+
+var createTorus = function createTorus() {
+  // (-, -, radius sequence number, tubular sequence number (affects shape eg 5 would make pentagon shape), arc variable (creates arc))
+  var geometry = new THREE.TorusGeometry(0.5, 0.2, 30, 30, Math.PI);
+  var material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+  torus = new THREE.Mesh(geometry, material);
+  scene.add(torus);
 };
 
 //Set up the environment - 
@@ -46,6 +55,8 @@ var init = function init() {
   // show axis helper
   var axes = new THREE.AxesHelper(5);
   scene.add(axes);
+
+  createTorus();
 
   createSphere();
 
@@ -67,7 +78,10 @@ var mainLoop = function mainLoop() {
   cube.rotation.y += ADD;
 
   sphere.rotation.x += ADD;
-  // sphere.rotation.y += ADD;
+  sphere.rotation.y += ADD;
+
+  torus.rotation.x += ADD;
+  torus.rotation.y += ADD;
 
   // reverse direction if reached 2 on either side
   if (cube.position.x <= -2 || cube.position.x >= 2) {

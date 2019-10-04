@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
   mainLoop();
 });
 
-let scene, camera, renderer, cube, sphere;
+let scene, camera, renderer, cube, sphere, torus;
 
 //how much to move cube in every call in loop
-let ADD = 0.1;
+let ADD = 0.05;
 
 let createCube = function() {
   let geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -22,6 +22,14 @@ let createSphere = function() {
   let material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
   sphere = new THREE.Mesh(geometry, material);
   scene.add(sphere);
+}
+
+let createTorus = function() {
+  // (-, -, radius sequence number, tubular sequence number (affects shape eg 5 would make pentagon shape), arc variable (creates arc))
+  let geometry = new THREE.TorusGeometry(0.5, 0.2, 30, 30, Math.PI);
+  let material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true});
+  torus = new THREE.Mesh(geometry, material);
+  scene.add(torus);
 }
 
 //Set up the environment - 
@@ -41,10 +49,11 @@ let init = function() {
   let axes = new THREE.AxesHelper(5);
   scene.add(axes);
 
+  createTorus();
+
   createSphere();
 
   createCube();
-
 
   //create the renderer
   renderer = new THREE.WebGLRenderer();
@@ -62,7 +71,10 @@ let mainLoop = function() {
   cube.rotation.y += ADD;
 
   sphere.rotation.x += ADD;
-  // sphere.rotation.y += ADD;
+  sphere.rotation.y += ADD;
+
+  torus.rotation.x += ADD;
+  torus.rotation.y += ADD;
 
   // reverse direction if reached 2 on either side
   if(cube.position.x <= -2 || cube.position.x >= 2) {

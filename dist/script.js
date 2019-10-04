@@ -1,10 +1,11 @@
-"use strict";
+'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
   init();
   mainLoop();
+  donutLoop();
 });
-
+//For practice section
 var scene = void 0,
     camera = void 0,
     renderer = void 0,
@@ -12,12 +13,19 @@ var scene = void 0,
     sphere = void 0,
     torus = void 0;
 
-//how much to move cube in every call in loop
+//For donuts section
+var newScene = void 0,
+    newCamera = void 0,
+    newRenderer = void 0;
+var donuts = [];
+var donutsAdd = 0.1;
+
+//how much to move cube in every call in loop - for practice section
 var ADD = 0.05;
 
 var createCube = function createCube() {
   var geometry = new THREE.BoxGeometry(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({ color: 0x00a1cb });
+  var material = new THREE.MeshBasicMaterial({ color: 0x00a1cb, wireframe: true });
   cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 };
@@ -43,6 +51,11 @@ var createTorus = function createTorus() {
 //Initialize scene, camera, objects and renderer
 
 var init = function init() {
+  practiceShapes();
+  rainingDonuts();
+};
+
+var practiceShapes = function practiceShapes() {
   console.log(document);
   //create the scene
   scene = new THREE.Scene();
@@ -65,7 +78,7 @@ var init = function init() {
   //create the renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  document.querySelector('.practice').appendChild(renderer.domElement);
 };
 
 //main animation loop - calls every 50-60 ms
@@ -90,4 +103,52 @@ var mainLoop = function mainLoop() {
 
   renderer.render(scene, camera);
   requestAnimationFrame(mainLoop);
+};
+
+var randomInRange = function randomInRange(from, to) {
+  var x = Math.random() * (to - from);
+  return x + from;
+};
+
+//create single donut
+var createDonut = function createDonut() {
+  var geometry = new THREE.TorusGeometry(0.2, 0.1, 5, 60);
+  var material = new THREE.MeshBasicMaterial({ color: Math.random() * 0xffffff, wireframe: true });
+  var singleDonut = new THREE.Mesh(geometry, material);
+  singleDonut.position.x = randomInRange(-15, 15);
+  singleDonut.position.z = randomInRange(-15, 15);
+  singleDonut.position.y = 15;
+  newScene.add(singleDonut);
+  //add to donuts array
+  donuts.push(singleDonut);
+};
+
+var rainingDonuts = function rainingDonuts() {
+  newScene = new THREE.Scene();
+  newScene.background = new THREE.Color(0xe2e2e2);
+
+  newCamera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+  newCamera.position.z = 4;
+
+  var newAxes = new THREE.AxesHelper(5);
+  newScene.add(newAxes);
+
+  newRenderer = new THREE.WebGLRenderer();
+  newRenderer.setSize(window.innerWidth, window.innerHeight);
+  document.querySelector('.donuts').appendChild(newRenderer.domElement);
+};
+
+var donutLoop = function donutLoop() {
+  //instead of generating donuts on every loop iteration - generate them randomly
+  var x = Math.random();
+  if (x < 0.2) {
+    createDonut();
+  }
+  // make donuts look like they are falling
+  donuts.forEach(function (singleDonut) {
+    return singleDonut.position.y -= donutsAdd;
+  });
+
+  newRenderer.render(newScene, newCamera);
+  requestAnimationFrame(donutLoop);
 };

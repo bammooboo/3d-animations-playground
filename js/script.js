@@ -1,16 +1,22 @@
 document.addEventListener("DOMContentLoaded", function() {
   init();
   mainLoop();
+  donutLoop();
 });
-
+//For practice section
 let scene, camera, renderer, cube, sphere, torus;
 
-//how much to move cube in every call in loop
+//For donuts section
+let newScene, newCamera, newRenderer;
+let donuts = [];
+let donutsAdd = 0.1;
+
+//how much to move cube in every call in loop - for practice section
 let ADD = 0.05;
 
 let createCube = function() {
   let geometry = new THREE.BoxGeometry(1, 1, 1);
-  let material = new THREE.MeshBasicMaterial({color: 0x00a1cb});
+  let material = new THREE.MeshBasicMaterial({color: 0x00a1cb, wireframe: true});
   cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 }
@@ -36,6 +42,11 @@ let createTorus = function() {
 //Initialize scene, camera, objects and renderer
 
 let init = function() {
+  practiceShapes();
+  rainingDonuts();
+};
+
+let practiceShapes = function() {
   console.log(document);
   //create the scene
   scene = new THREE.Scene();
@@ -49,6 +60,7 @@ let init = function() {
   let axes = new THREE.AxesHelper(5);
   scene.add(axes);
 
+
   createTorus();
 
   createSphere();
@@ -58,8 +70,8 @@ let init = function() {
   //create the renderer
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-};
+  document.querySelector('.practice').appendChild(renderer.domElement);
+}
 
 //main animation loop - calls every 50-60 ms
 
@@ -84,3 +96,50 @@ let mainLoop = function() {
   renderer.render(scene, camera);
   requestAnimationFrame(mainLoop);
 };
+
+let randomInRange = function(from, to) {
+  let x = Math.random() * (to - from);
+  return x + from;
+};
+
+//create single donut
+let createDonut = function() {
+  let geometry = new THREE.TorusGeometry(0.2, 0.1, 5, 60);
+  let material = new THREE.MeshBasicMaterial({color: Math.random() * 0xffffff, wireframe: true});
+  let singleDonut = new THREE.Mesh(geometry, material);
+  singleDonut.position.x = randomInRange(-15, 15);
+  singleDonut.position.z = randomInRange(-15, 15);
+  singleDonut.position.y = 15;
+  newScene.add(singleDonut);
+  //add to donuts array
+  donuts.push(singleDonut);
+
+}
+
+let rainingDonuts = function() {
+  newScene= new THREE.Scene();
+  newScene.background = new THREE.Color(0xe2e2e2);
+
+  newCamera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+  newCamera.position.z = 4;
+
+  let newAxes = new THREE.AxesHelper(5);
+  newScene.add(newAxes);
+
+  newRenderer = new THREE.WebGLRenderer();
+  newRenderer.setSize(window.innerWidth, window.innerHeight);
+  document.querySelector('.donuts').appendChild(newRenderer.domElement);
+}
+
+let donutLoop = function() {
+  //instead of generating donuts on every loop iteration - generate them randomly
+  let x = Math.random();
+  if(x < 0.2) {
+    createDonut();
+  }
+  // make donuts look like they are falling
+  donuts.forEach(singleDonut => singleDonut.position.y -= donutsAdd);
+
+  newRenderer.render(newScene, newCamera);
+  requestAnimationFrame(donutLoop);
+}

@@ -1,0 +1,28 @@
+{
+  "name": "3d-animations-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile:sass": "node-sass sass/main.scss dist/style.css -w",
+    "build": "babel js -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bammooboo/3d-animations-playground.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bammooboo/3d-animations-playground/issues"
+  },
+  "homepage": "https://github.com/bammooboo/3d-animations-playground#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "live-server": "^1.2.1",
+    "node-sass": "^4.12.0"
+  },
+  "dependencies": {}
+}

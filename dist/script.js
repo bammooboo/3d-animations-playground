@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // donutLoop();
   // saturnLoop();
   // geoLoop();
-  butterflyLoop();
+  // butterflyLoop();
 });
 //For practice section
 var scene = void 0,
@@ -66,7 +66,7 @@ var init = function init() {
   // rainingDonuts();
   // saturnAnimation();
   // geometryShape();
-  butterflyEffect();
+  // butterflyEffect();
 };
 
 var practiceShapes = function practiceShapes() {

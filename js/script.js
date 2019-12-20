@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // donutLoop();
   // saturnLoop();
   // geoLoop();
-  butterflyLoop();
+  // butterflyLoop();
 });
 //For practice section
 let scene, camera, renderer, cube, sphere, torus;
@@ -55,7 +55,7 @@ let init = function() {
   // rainingDonuts();
   // saturnAnimation();
   // geometryShape();
-  butterflyEffect();
+  // butterflyEffect();
 };
 
 let practiceShapes = function() {
